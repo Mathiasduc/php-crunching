@@ -27,7 +27,7 @@
 	function howManyQinLastPos($dico){
 		$caseFound = 0;
 		foreach ($dico as $key => $value) {
-			if (strpos($value, 'q') === strlen($value)-1){
+			if (strrpos($value, 'q') === strlen($value)-1){
 				echo 	$value . ' / ';
 				$caseFound++;
 			}
@@ -35,7 +35,9 @@
 		return $caseFound;
 	}
 	?>
-	
+	<h2>
+		Dictionnaire exercises:
+	</h2>
 	<h3>
 		Combien de mots contient ce dictionnaire ?
 	</h3>
