@@ -42,6 +42,20 @@ function sortMoviesByRelease($haystack){
 	}
 	return($arrayDates);
 }
+
+function arrayOfType($haystack){
+	$arrayType = [];
+	foreach ($haystack as $key => $value) {
+		$thisType = $value["category"]["attributes"]["label"];
+		if(array_key_exists($thisType, $arrayType)){	
+			$arrayType[$thisType]++;
+		}else{
+			$arrayType[$thisType] = 1;
+		}
+	}
+	asort($arrayType);
+	return($arrayType);
+}
 ?>
 <div>
 	<h2>Films Exercices:</h2>
@@ -86,3 +100,18 @@ function sortMoviesByRelease($haystack){
 		?>
 	</h4>
 </div>
+<div>
+	<h3>
+		Quelle est la catégorie de films la plus représentée ?
+	</h3>
+	<h4>
+		<?php
+
+			$types = ArrayOfType($top);
+			end($types);
+			$mostRepresented = key($types);
+			echo $mostRepresented;
+		?>
+	</h4>
+</div>
+

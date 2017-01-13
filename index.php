@@ -7,7 +7,6 @@
 <body>
 	<div class="main center">
 		<?php include "./film.php" ?>
-		
 
 	</div>
 </body>
