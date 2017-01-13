@@ -31,6 +31,17 @@ function moviesBefore($year, $haystack){
 	}
 	return($count);
 }
+function sortMoviesByRelease($haystack){
+	$arrayDates = [];
+	foreach ($haystack as $key => $value) {
+		$arrayDates[$value["im:name"]["label"]] = strtotime(str_replace(","," ", $value["im:releaseDate"]["attributes"]["label"]));
+	}
+	asort($arrayDates);
+	foreach ($arrayDates as $key => $value) {
+		$arrayDates[$key] = date("Y-m-d",$value);	
+	}
+	return($arrayDates);
+}
 ?>
 <div>
 	<h2>Films Exercices:</h2>
@@ -59,5 +70,19 @@ function moviesBefore($year, $haystack){
 	</h3>
 	<h4>
 		<?php echo moviesBefore("2000", $top); ?>
+	</h4>
+</div>
+<div>
+	<h3>
+		Quel est le film le plus récent ? Le plus vieux ?
+	</h3>
+	<h4>
+		<?php 
+		$sortedArray = sortMoviesByRelease($top);
+		$keys = array_keys($sortedArray);
+		echo $keys[0] . " le " . $sortedArray[$keys[0]] ;
+		echo " et ";
+		echo end($keys) . " le " . $sortedArray[end($keys)];
+		?>
 	</h4>
 </div>
