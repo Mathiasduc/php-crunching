@@ -56,6 +56,66 @@ function arrayOfType($haystack){
 	asort($arrayType);
 	return($arrayType);
 }
+
+function arrayOfDirector($haystack){
+	$arrayType = [];
+	foreach ($haystack as $key => $value) {
+		$thisDirector= $value["im:artist"]["label"];
+		if(array_key_exists($thisDirector, $arrayType)){	
+			$arrayType[$thisDirector]++;
+		}else{
+			$arrayType[$thisDirector] = 1;
+		}
+	}
+	asort($arrayType);
+	return($arrayType);
+}
+
+function cumulativePrices($haystack){
+	$buyPrice = 0;
+	$rentalPrice = 0;
+	for ($i=0; $i < 10; $i++) { 
+		$price = $haystack[$i]["im:price"]["label"];
+		if(isset($haystack[$i]["im:rentalPrice"]["label"])){
+			$rentalPrice+= floatval(str_replace("$", "",$haystack[$i]["im:rentalPrice"]["label"]));
+		}
+		$buyPrice += floatval(str_replace("$", "",$price));
+	}
+	echo "Achat : "	. strval($buyPrice) . "$. Location : " . strval($rentalPrice) . "$";
+}
+
+function makePriceArray($haystack){
+	$priceArr = []; 
+	foreach ($haystack as $key => $value) {
+		$priceArr[$value["im:name"]["label"]] = intval(floatval($value["im:price"]["attributes"]["amount"]) * 100);
+	}
+	return($priceArr);
+}
+function bestCheapMovies($haystack,$nbrOfMoviesWanted){
+	$bestArr = [];
+	$LenghtBest = 0;
+	$priceArr = makePriceArray($haystack);
+	$sortedClone = $priceArr;
+	asort($sortedClone);
+	$lowestPrice = current($sortedClone);
+	$highestPrice = end($sortedClone);
+	while ($lowestPrice <= $highestPrice){
+		foreach ($priceArr as $key => $value) {
+			if($LenghtBest === $nbrOfMoviesWanted){
+				return($bestArr);
+			}elseif($value === $lowestPrice){
+				$bestArr[$key] = $value;
+				$priceArr[$key] = NULL;
+				$LenghtBest++;
+			}
+		} 	
+		$lowestPrice ++;
+	}
+	echo "PROBLEM";
+	return($bestArr);
+
+}
+
 ?>
 <div>
 	<h2>Films Exercices:</h2>
@@ -106,12 +166,49 @@ function arrayOfType($haystack){
 	</h3>
 	<h4>
 		<?php
-
-			$types = ArrayOfType($top);
-			end($types);
-			$mostRepresented = key($types);
-			echo $mostRepresented;
+		$types = ArrayOfType($top);
+		end($types);
+		$mostRepresented = key($types);
+		echo $mostRepresented .  " avec " . strval(end($types)) . " films";
 		?>
 	</h4>
 </div>
 
+<div>
+	<h3>
+		Quel est le réalisateur le plus présent dans le top100 ?
+	</h3>
+	<h4>
+		<?php
+		$types = arrayOfDirector($top);
+		end($types);
+		$mostRepresented = key($types);
+		echo $mostRepresented .  " avec " . strval(end($types)) . " films";
+		?>
+	</h4>
+</div>
+<div>
+	<h3>
+		Combien cela coûterait-il d'acheter le top10 sur iTunes ? de le louer ?
+	</h3>
+	<h4>
+		<?php
+		cumulativePrices($top);
+		?>
+	</h4>
+</div>
+<div>
+	<h3>
+		Quels sont les 10 meilleurs films à voir en ayant un budget limité ?
+	</h3>
+	<h4>
+		<?php
+
+			$arrayBestCheapMovies = bestCheapMovies($top, 10);
+			foreach ($arrayBestCheapMovies as $key => $value) {
+				echo "$key, ";
+			}
+			echo ".";
+		?>
+	</h4>
+</div>
